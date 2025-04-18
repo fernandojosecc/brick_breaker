@@ -1,5 +1,6 @@
 import 'package:brick_breaker/ball.dart';
 import 'package:brick_breaker/coverscreen.dart';
+import 'package:brick_breaker/gameoverscreen.dart';
 import 'package:brick_breaker/player.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' as async;
@@ -39,6 +40,12 @@ class _HomePageState extends State<HomePage> {
   double playerX = -0.2;
   double playerWidth = 0.4; //out of 2
 
+  //brick variables
+  double brickX = 0;
+  double brickY = -0.9;
+  double brickWidth = 0.04; //out of 2
+  double brickHeight = 0.1; //out of 2
+
   //game settings
   bool hasGameStarted = false;
   bool isGameOver = false;
@@ -60,7 +67,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //is player dead
   bool isPlayerDead() {
+    //player dies if ball reaches the bottom of the screen
     if (ballY >= 1) {
       return true;
     }
@@ -136,11 +145,27 @@ class _HomePageState extends State<HomePage> {
                 //tap to play
                 CoverScreen(hasGameStarted: hasGameStarted),
 
+                //game over screen
+                GameOverScreen(isGameOver: isGameOver),
+
                 //ball
                 MyBall(ballX: ballX, ballY: ballY),
 
                 //player
                 MyPlayer(playerX: playerX, playerWidth: playerWidth),
+
+                //bricks
+                Container(
+                  alignment: Alignment(0, -0.9),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      height: 20,
+                      width: 50,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                ),
 
                 //Where is playerX exactly?
               ],
