@@ -8,7 +8,7 @@ import 'dart:async' as async;
 
 import 'package:flutter/services.dart';
 
-enum direction { UP, DOWN }
+enum direction { UP, DOWN, LEFT, RIGHT }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -35,7 +35,10 @@ class _HomePageState extends State<HomePage> {
   //ball variables
   double ballX = 0;
   double ballY = 0;
-  var ballDirection = direction.DOWN;
+  double ballXincrements = 0.01;
+  double ballYincrements = 0.01;
+  var ballYDirection = direction.DOWN;
+  var ballXDirection = direction.LEFT;
 
   //player variables
   double playerX = -0.2;
@@ -80,6 +83,7 @@ class _HomePageState extends State<HomePage> {
         brickBroken == false) {
       setState(() {
         brickBroken = true;
+        ballYDirection = direction.DOWN;
       });
     }
   }
@@ -93,12 +97,21 @@ class _HomePageState extends State<HomePage> {
     return false;
   }
 
+  //move ball
   void moveBall() {
     setState(() {
-      if (ballDirection == direction.DOWN) {
-        ballY += 0.01;
-      } else if (ballDirection == direction.UP) {
-        ballY -= 0.01;
+      //Move horizontally
+      if (ballXDirection == direction.LEFT) {
+        ballX -= ballXincrements;
+      } else if (ballXDirection == direction.RIGHT) {
+        ballX += ballXincrements;
+      }
+
+      //move vertically
+      if (ballYDirection == direction.DOWN) {
+        ballY += ballYincrements;
+      } else if (ballYDirection == direction.UP) {
+        ballY -= ballYincrements;
       }
     });
   }
@@ -107,9 +120,9 @@ class _HomePageState extends State<HomePage> {
   void updateDirection() {
     setState(() {
       if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth) {
-        ballDirection = direction.UP;
-      } else if (ballY <= -0.9) {
-        ballDirection = direction.DOWN;
+        ballYDirection = direction.UP;
+      } else if (ballY <= -1) {
+        ballYDirection = direction.DOWN;
       }
     });
   }
