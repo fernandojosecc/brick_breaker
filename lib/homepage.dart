@@ -45,11 +45,16 @@ class _HomePageState extends State<HomePage> {
   double playerWidth = 0.4; //out of 2
 
   //brick variables
-  double brickX = 0;
-  double brickY = -0.9;
-  double brickWidth = 0.4; //out of 2
-  double brickHeight = 0.05; //out of 2
+  static double firstBrickX = -0.5;
+  static double firstBrickY = -0.9;
+  static double brickWidth = 0.4; //out of 2
+  static double brickHeight = 0.05; //out of 2
   bool brickBroken = false;
+
+  static var MyBricks = [
+    //[x,y, broken = true/flase]
+    [firstBrickX, firstBrickY, false],
+  ];
 
   //game settings
   bool hasGameStarted = false;
@@ -77,7 +82,7 @@ class _HomePageState extends State<HomePage> {
 
   void checkForBrokenBricks() {
     //checks for when ball hits bottom of brick
-    if (ballX >= brickX &&
+    if (ballX >= MyBricks[0][0] &&
         ballX <= brickX + brickWidth &&
         ballY <= brickY + brickHeight &&
         brickBroken == false) {
@@ -119,10 +124,22 @@ class _HomePageState extends State<HomePage> {
   //update direction of the ball
   void updateDirection() {
     setState(() {
+      //ball goes up when it hits player
       if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth) {
         ballYDirection = direction.UP;
-      } else if (ballY <= -1) {
+      }
+      //ball goes down when it hits the top of screen
+      else if (ballY <= -1) {
         ballYDirection = direction.DOWN;
+      }
+
+      //ball goes left when it hits right wall
+      if (ballX >= 1) {
+        ballXDirection = direction.LEFT;
+      }
+      //ball goes right when it hits left wall
+      else if (ballX <= -1) {
+        ballXDirection = direction.RIGHT;
       }
     });
   }
