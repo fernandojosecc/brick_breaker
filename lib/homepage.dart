@@ -5,6 +5,7 @@ import 'package:brick_breaker/gameoverscreen.dart';
 import 'package:brick_breaker/player.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' as async;
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
+    generateRandomBricks(); // 💥 for initial start
   }
 
   @override
@@ -58,7 +60,7 @@ class _HomePageState extends State<HomePage> {
           (numberOfBricksInRow - 1) * brickGap);
   bool brickBroken = false;
 
-  List MyBricks = [
+  List<List<dynamic>> MyBricks = [
     //[x,y, broken = true/flase]
     [firstBrickX + 0 * (brickWidth + brickGap), firstBrickY, false],
     [firstBrickX + 1 * (brickWidth + brickGap), firstBrickY, false],
@@ -115,35 +117,22 @@ class _HomePageState extends State<HomePage> {
             topSideDist,
             bottomSideDist,
           );
+
+          // Change direction based on side hit
           switch (min) {
             case 'left':
               ballXDirection = direction.LEFT;
-
               break;
             case 'right':
               ballXDirection = direction.RIGHT;
-
               break;
             case 'up':
               ballYDirection = direction.UP;
-
               break;
             case 'down':
               ballYDirection = direction.DOWN;
-
               break;
           }
-          //if ball hit bottom side of brick then
-          ballYDirection = direction.DOWN;
-
-          //if ball hit top side of brick then
-          ballYDirection = direction.UP;
-
-          //if ball hit left side of brick then
-          ballYDirection = direction.LEFT;
-
-          //if ball hit right side of brick then
-          ballYDirection = direction.RIGHT;
         });
       }
     }
@@ -204,20 +193,23 @@ class _HomePageState extends State<HomePage> {
   //update direction of the ball
   void updateDirection() {
     setState(() {
-      //ball goes up when it hits player
-      if (ballY >= 0.9 && ballX >= playerX && ballX <= playerX + playerWidth) {
+      // 🎯 Fix paddle collision logic
+      double playerLeftEdge = playerX - playerWidth / 2;
+      double playerRightEdge = playerX + playerWidth / 2;
+
+      if (ballY >= 0.9 && ballX >= playerLeftEdge && ballX <= playerRightEdge) {
         ballYDirection = direction.UP;
       }
-      //ball goes down when it hits the top of screen
+      // Top of screen
       else if (ballY <= -1) {
         ballYDirection = direction.DOWN;
       }
 
-      //ball goes left when it hits right wall
+      // Right wall
       if (ballX >= 1) {
         ballXDirection = direction.LEFT;
       }
-      //ball goes right when it hits left wall
+      // Left wall
       else if (ballX <= -1) {
         ballXDirection = direction.RIGHT;
       }
@@ -246,6 +238,31 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //reset game back to initial values vhen user hits play again
+  void resetGame() {
+    setState(() {
+      playerX = -0.2;
+      ballX = 0;
+      ballY = 0;
+      isGameOver = false;
+      hasGameStarted = false;
+      generateRandomBricks(); // 💥
+    });
+  }
+
+  void generateRandomBricks() {
+    MyBricks.clear(); // remove old ones
+    Random rand = Random();
+
+    for (int i = 0; i < 24; i++) {
+      double randomX = -1 + rand.nextDouble() * 2; // from -1 to 1
+      double randomY =
+          -0.9 + rand.nextDouble() * 0.8; // upper half screen (-0.9 to -0.1)
+
+      MyBricks.add([randomX, randomY, false]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return KeyboardListener(
@@ -269,10 +286,13 @@ class _HomePageState extends State<HomePage> {
             child: Stack(
               children: [
                 //tap to play
-                CoverScreen(hasGameStarted: hasGameStarted),
+                CoverScreen(
+                  hasGameStarted: hasGameStarted,
+                  isGameOver: isGameOver,
+                ),
 
                 //game over screen
-                GameOverScreen(isGameOver: isGameOver),
+                GameOverScreen(isGameOver: isGameOver, function: resetGame),
 
                 //ball
                 MyBall(ballX: ballX, ballY: ballY),
