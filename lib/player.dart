@@ -21,7 +21,7 @@ class MyPlayer extends StatelessWidget {
         child: Container(
           width: playerRealWidth,
           height: 10,
-          color: Colors.deepPurple,
+          color: Colors.blue,
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:brick_breaker/coverscreen.dart';
 import 'package:brick_breaker/gameoverscreen.dart';
 import 'package:brick_breaker/player.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'dart:async' as async;
 import 'dart:math';
 
@@ -126,6 +127,7 @@ class _HomePageState extends State<HomePage> {
           ballY <= brickY + brickHeight) {
         setState(() {
           MyBricks[i][2] = true;
+          AudioPlayer().play(AssetSource('sounds/quack.mp3'));
 
           // Calculate distance from each side
           double leftDist = (brickX - ballX).abs();
@@ -298,7 +300,7 @@ class _HomePageState extends State<HomePage> {
       child: GestureDetector(
         onTap: startGame,
         child: Scaffold(
-          backgroundColor: Colors.deepPurple[100],
+          backgroundColor: Colors.lightBlue[100],
           body: Center(
             child: Stack(
               children: [

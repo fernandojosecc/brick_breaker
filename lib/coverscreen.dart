@@ -8,7 +8,7 @@ class CoverScreen extends StatelessWidget {
   //font
   static var gameFont = GoogleFonts.pressStart2p(
     textStyle: TextStyle(
-      color: Colors.deepPurple[600],
+      color: Colors.blue[600],
       letterSpacing: 0,
       fontSize: 28,
     ),
@@ -28,13 +28,13 @@ class CoverScreen extends StatelessWidget {
           children: [
             Container(
               alignment: Alignment(0, -0.1),
-              child: Text('BRICK BREAKER', style: gameFont),
+              child: Text('DUCK BREAKER', style: gameFont),
             ),
             Container(
               alignment: Alignment(0, -0.5),
               child: Text(
                 'tap to play',
-                style: TextStyle(color: Colors.deepPurple[400]),
+                style: TextStyle(color: Colors.blueAccent[400]),
               ),
             ),
           ],
