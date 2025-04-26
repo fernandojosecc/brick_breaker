@@ -299,30 +299,42 @@ class _HomePageState extends State<HomePage> {
       },
       child: GestureDetector(
         onTap: startGame,
-        child: Scaffold(
-          backgroundColor: Colors.lightBlue[100],
-          body: Center(
-            child: Stack(
-              children: [
-                CoverScreen(
-                  hasGameStarted: hasGameStarted,
-                  isGameOver: isGameOver,
-                ),
-                GameOverScreen(isGameOver: isGameOver, function: resetGame),
-                MyBall(ballX: ballX, ballY: ballY),
-                MyPlayer(playerX: playerX, playerWidth: playerWidth),
+        child: GestureDetector(
+          onTapDown: (TapDownDetails details) {
+            double screenWidth = MediaQuery.of(context).size.width;
+            double dx = details.globalPosition.dx;
 
-                // 💥 Dynamically show all bricks
-                ...MyBricks.map((brick) {
-                  return MyBrick(
-                    brickX: brick[0],
-                    brickY: brick[1],
-                    brickBroken: brick[2],
-                    brickWidth: brickWidth,
-                    brickHeight: brickHeight,
-                  );
-                }).toList(),
-              ],
+            if (dx < screenWidth / 2) {
+              moveLeft();
+            } else {
+              moveRight();
+            }
+          },
+          child: Scaffold(
+            backgroundColor: Colors.lightBlue[100],
+            body: Center(
+              child: Stack(
+                children: [
+                  CoverScreen(
+                    hasGameStarted: hasGameStarted,
+                    isGameOver: isGameOver,
+                  ),
+                  GameOverScreen(isGameOver: isGameOver, function: resetGame),
+                  MyBall(ballX: ballX, ballY: ballY),
+                  MyPlayer(playerX: playerX, playerWidth: playerWidth),
+
+                  // 💥 Dynamically show all bricks
+                  ...MyBricks.map((brick) {
+                    return MyBrick(
+                      brickX: brick[0],
+                      brickY: brick[1],
+                      brickBroken: brick[2],
+                      brickWidth: brickWidth,
+                      brickHeight: brickHeight,
+                    );
+                  }).toList(),
+                ],
+              ),
             ),
           ),
         ),
